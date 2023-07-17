@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+
+int main()
+{
+    // Create a socket
+    int server_socket = socket(AF_INET, SOCK_STREAM, 0);
+    if (server_socket == -1)
+    {
+        perror("Socket creation failed");
+        exit(EXIT_FAILURE);
+    }
+
+    // Bind the socket to a specific IP address and port
+    struct sockaddr_in server_address;
+    server_address.sin_family = AF_INET;
+    server_address.sin_addr.s_addr = INADDR_ANY;
+    server_address.sin_port = htons(12345);
+
+    if (bind(server_socket, (struct sockaddr *)&server_address, sizeof(server_address)) == -1)
+    {
+        perror("Bind failed");
+        exit(EXIT_FAILURE);
+    }
+
+    // Listen for incoming connections
+    if (listen(server_socket, 1) == -1)
+    {
+        perror("Listen failed");
+        exit(EXIT_FAILURE);
+    }
+
+    printf("Server started on port 12345\n");
+
+    while (1)
+    {
+        // Accept a client connection
+        int client_socket = accept(server_socket, NULL, NULL);
+        if (client_socket == -1)
+        {
+            perror("Accept failed");
+            exit(EXIT_FAILURE);
+        }
+
+        // Generate a random number between 50,000 - 80,000
+        int rndm_num= rand() % (80000 - 50000 + 1) + 50000;
+
+        // Send the random number to the client
+        if (send(client_socket, &rndm_num, sizeof(rndm_num), 0) == -1)
+        {
+            perror("Send failed");
+            exit(EXIT_FAILURE);
+        }
+
+        close(client_socket);
+    }
+
+    close(server_socket);
+
+    return 0;
+}
+
