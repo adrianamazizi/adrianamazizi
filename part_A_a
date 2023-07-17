@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <signal.h>
+#include <string.h>
+
+int main() {
+  int pipefd[2];
+  pid_t pid;
+  char message[100];
+  int signal_number = SIGINT;
+
+  // Create the pipe.
+  pipe(pipefd);
+
+  // Fork 3 child processes.
+  for (int i = 0; i < 3; i++) {
+    pid = fork();
+    if (pid == 0) {
+      // This is the child process.
+      // Send a message to the parent process.
+      snprintf(message, sizeof(message), "Hello from child %d!", i + 1);
+      write(pipefd[1], message, strlen(message));
+      // Terminate the child process after a delay.
+      sleep(2);
+      exit(0);
+    }
+  }
+
+  // This is the parent process.
+  // Read the messages from the child processes.
+  for (int i = 0; i < 3; i++) {
+    int bytes_read = read(pipefd[0], message, sizeof(message));
+    if (bytes_read > 0) {
+      printf("Message from child %d: %s\n", i + 1, message);
+      // Send a signal to the child process.
+      kill(pid, signal_number);
+    }
+  }
+
+  // Close the pipe.
+  close(pipefd[0]);
+  close(pipefd[1]);
+
+  return 0;
+}
