@@ -1,0 +1,20 @@
+import threading
+
+class FibonacciThread(threading.Thread):
+    def __init__(self, n):
+        threading.Thread.__init__(self)
+        self.n = n
+
+    def run(self):
+        sequence = []
+        x, y = 0, 1
+        while x <= self.n:
+            sequence.append(x)
+            x, y = x, x + y
+        print("Fibonacci:", sequence)
+    if __name__ == "__main__":
+    n = 10000
+
+    fibonacci_thread = FibonacciThread(n)
+    fibonacci_thread.start()
+    fibonacci_thread.join()
