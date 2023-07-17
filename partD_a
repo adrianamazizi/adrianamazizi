@@ -1,20 +1,26 @@
 import threading
 
 class FibonacciThread(threading.Thread):
-    def __init__(self, n):
-        threading.Thread.__init__(self)
-        self.n = n
+
+    def __init__(self, first_number, second_number):
+        super().__init__()
+        self.f_num = first_number
+        self.sec_num = second_number
 
     def run(self):
-        sequence = []
-        x, y = 0, 1
-        while x <= self.n:
-            sequence.append(x)
-            x, y = x, x + y
-        print("Fibonacci:", sequence)
-    if __name__ == "__main__":
-    n = 10000
+        fibonacci_number = self.f_num + self.sec_num
+        print(fibonacci_number)
 
-    fibonacci_thread = FibonacciThread(n)
-    fibonacci_thread.start()
-    fibonacci_thread.join()
+        if fibonacci_number < 10000:
+            thread = FibonacciThread(fibonacci_number, self.sec_num + fibonacci_number)
+            thread.start()
+
+def main():
+    first_number = 0
+    second_number = 1
+
+    thread = FibonacciThread(first_number, second_number)
+    thread.start()
+
+if __name__ == "__main__":
+    main()
