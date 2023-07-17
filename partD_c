@@ -1,0 +1,24 @@
+import threading
+
+class CubeThread(threading.Thread):
+
+    def __init__(self, number):
+        super().__init__()
+        self.num = number
+
+    def run(self):
+        cube = self.num * self.num * self.num
+        print(f"The cube of {self.num} is {cube}")
+
+def main():
+    threads = []
+    for i in range(1, 10001):
+        thread = CubeThread(i)
+        thread.start()
+        threads.append(thread)
+
+    for thread in threads:
+        thread.join()
+
+if __name__ == "__main__":
+    main()
