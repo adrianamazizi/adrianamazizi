@@ -1,0 +1,32 @@
+import socket
+
+def is_prime(n):
+    if s <= 1:
+        return False
+    for i in range(2, int(s**0.5) + 1):
+        if s % i == 0:
+            return False
+    return True
+
+def main():
+    # Create a UDP socket
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    # Bind the socket to a specific IP address and port
+    server_address = ('localhost', 12345)
+    server_socket.bind(server_address)
+    print('Server started on {}:{}'.format(*server_address))
+
+    while True:
+        # Receive data from the client
+        data, address = server_socket.recvfrom(1024)
+        number = int(data.decode())
+
+        # Check if the number is prime
+        result = is_prime(number)
+
+        # Send the result back to the client
+        server_socket.sendto(str(result).encode(), address)
+
+if __name__ == '__main__':
+    main()
