@@ -1,0 +1,27 @@
+import socket
+
+def main():
+    # Create a UDP socket
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    # Server address
+    server_address = ('localhost', 12345)
+
+    # Input number from the user
+    number = int(input('Enter a number: '))
+
+    # Send the number to the server
+    client_socket.sendto(str(number).encode(), server_address)
+
+    # Receive the result from the server
+    data, _ = client_socket.recvfrom(1024)
+    result = bool(data.decode())
+
+    if result:
+        print(f'{number} is prime.')
+    else:
+        print(f'{number} is not prime.')
+
+if __name__ == '__main__':
+    main()
+
